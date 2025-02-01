@@ -118,5 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51095191302a40479b6cc7b71778559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemLevel: 2
+  itemLevel: 1
   isDraggable: 1

@@ -5,6 +5,7 @@ public class ItemSpawner : Singleton<ItemSpawner>
 {
     [Header("Hex Grid Reference")]
     public HexGrid3D hexGrid; // Assign your HexGrid GameObject in the Inspector
+    public HexGrid hexGridHoneyComb; // Assign your HexGrid GameObject in the Inspector
 
     [Header("Item Prefabs (Assign in Order: Item1, Item2, Item3, Item4)")]
     public GameObject[] itemPrefabs; // Must have 4 elements
@@ -38,7 +39,8 @@ public class ItemSpawner : Singleton<ItemSpawner>
 
     public void InitItemSpawner()
     {
-        spawnPositions = hexGrid.tilePositions;
+        // spawnPositions = hexGrid.tilePositions;
+        spawnPositions = hexGridHoneyComb.tilePositions;
         Debug.Log(spawnPositions.Count);
         PopulateGrid();
     }

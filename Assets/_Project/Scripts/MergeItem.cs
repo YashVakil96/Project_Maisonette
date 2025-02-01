@@ -7,6 +7,14 @@ public class MergeItem : MonoBehaviour
 
     private Vector3 offset;
     private bool isDragging = false;
+    private HexGrid3D hexGrid; // Reference to the hex grid
+    private Vector3 originalPosition; // Store the original position of the item
+
+    void Start()
+    {
+        hexGrid = FindObjectOfType<HexGrid3D>(); // Find the hex grid in the scene
+        originalPosition = transform.position; // Store the initial position
+    }
 
     void OnMouseDown()
     {
@@ -22,16 +30,23 @@ public class MergeItem : MonoBehaviour
         if (isDragging)
         {
             transform.position = GetMouseWorldPos() + offset;
+            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
         }
     }
 
     void OnMouseUp()
     {
         isDragging = false;
-        CheckForMerge();
+
+        // Check if the item is being dropped on another item of the same level
+        if (!TryMergeWithAdjacentItem())
+        {
+            // If no merge happens, snap back to the original position
+            transform.position = originalPosition;
+        }
     }
 
-    void CheckForMerge()
+    bool TryMergeWithAdjacentItem()
     {
         Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, 0.5f);
         foreach (Collider col in nearbyColliders)
@@ -40,15 +55,17 @@ public class MergeItem : MonoBehaviour
             if (otherItem != null && otherItem != this && otherItem.itemLevel == this.itemLevel)
             {
                 MergeItems(otherItem);
-                break;
+                return true; // Merge successful
             }
         }
+
+        return false; // No merge happened
     }
 
     void MergeItems(MergeItem otherItem)
     {
         int newLevel = itemLevel + 1;
-        Vector3 newPosition = (transform.position + otherItem.transform.position) / 2;
+        // Vector3 newPosition = (transform.position + otherItem.transform.position) / 2;
 
         Destroy(this.gameObject);
         Destroy(otherItem.gameObject);
@@ -57,14 +74,20 @@ public class MergeItem : MonoBehaviour
         GameObject newItemPrefab = GetPrefabForLevel(newLevel);
         if (newItemPrefab != null)
         {
-            Instantiate(newItemPrefab, newPosition, Quaternion.identity);
+            Instantiate(newItemPrefab, otherItem.transform.position, Quaternion.identity);
         }
     }
 
     GameObject GetPrefabForLevel(int level)
     {
-        // Replace this with your logic to get the correct prefab for the level
-        return ItemSpawner.Instance.itemPrefabs[level];
+        if (level < 4)
+        {
+            return ItemSpawner.Instance.itemPrefabs[level];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     Vector3 GetMouseWorldPos()

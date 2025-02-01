@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.joker_yash96.unitytools": "https://github.com/YashVakil96/Unity-Tools.git",
+    "com.unity.cinemachine": "2.9.7",
     "com.unity.collab-proxy": "2.6.0",
     "com.unity.feature.2d": "2.0.0",
     "com.unity.feature.development": "1.0.1",
